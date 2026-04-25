@@ -3,14 +3,20 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "./assets/vite.svg";
 import heroImg from "./assets/hero.png";
 import "./App.css";
+import Card from "../components/Cards";
 
 function App() {
   const [count, setCount] = useState(0);
-
+  let myObj={
+    username: "chhaya",
+    age: 21
+  }
+  let newArr= [1,2,3,4];
   return (
     <>
       <h1 className="bg-green-400 text-black text-3xl">Tailwind here</h1>
-  
+      <Card username ="prettiest" hashtags="beautiful"/>
+      <Card username ="peaceful"/>
     </>
   );
 }
