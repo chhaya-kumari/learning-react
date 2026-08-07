@@ -1,0 +1,489 @@
+ **how the developer decided what to write**.
+
+---
+
+# Step 1: Forget React for a minute
+
+Imagine you're building a real notebook.
+
+What information exists?
+
+Each todo has:
+
+```text
+- unique id
+- text
+- completed or not
+```
+
+So a todo naturally becomes
+
+```js
+{
+  id: 1,
+  text: "Learn React",
+  completed: false
+}
+```
+
+Not because React needs it.
+
+Because **the real-world object has those properties.**
+
+This is the first mindset.
+
+> Before writing React, ask:
+> "What does this thing look like in real life?"
+
+---
+
+# Step 2: What does the whole application store?
+
+One todo?
+
+No.
+
+Many todos.
+
+So the state becomes
+
+```js
+[
+  {
+    id:1,
+    text:"Learn React",
+    completed:false
+  },
+  {
+    id:2,
+    text:"Build Todo",
+    completed:true
+  }
+]
+```
+
+Immediately your brain should say
+
+> This is an array.
+
+That's why
+
+```js
+const [todos, setTodos] = useState([])
+```
+
+exists.
+
+Not because tutorials always use arrays.
+
+Because the data itself is multiple items.
+
+---
+
+# Step 3: Now ask what actions users can perform
+
+Don't write code yet.
+
+Imagine clicking around.
+
+User can
+
+* Add todo
+* Delete todo
+* Edit todo
+* Toggle completed
+
+Each action changes the array.
+
+So every action becomes a function.
+
+```js
+addTodo()
+
+deleteTodo()
+
+updateTodo()
+
+toggleComplete()
+```
+
+Notice something?
+
+The UI literally tells you what functions you need.
+
+---
+
+# Step 4: What data does each function need?
+
+This is where beginners get confused.
+
+Don't think about code.
+
+Think about the action.
+
+---
+
+## Add Todo
+
+Question:
+
+"What information do I need to create a todo?"
+
+Only the text.
+
+```js
+addTodo("Learn Context")
+```
+
+Inside it
+
+```js
+{
+   id: Date.now(),
+   text,
+   completed:false
+}
+```
+
+---
+
+## Delete Todo
+
+Question:
+
+"Which todo?"
+
+Need an id.
+
+```js
+deleteTodo(id)
+```
+
+---
+
+## Toggle Todo
+
+Question:
+
+"Which todo?"
+
+Again
+
+```js
+toggleTodo(id)
+```
+
+---
+
+## Edit Todo
+
+Question:
+
+"Which todo?"
+
+and
+
+"What should it become?"
+
+So
+
+```js
+updateTodo(id,newText)
+```
+
+That's literally the thinking process.
+
+---
+
+# Step 5: Why Context?
+
+Now ask another question.
+
+Which components need todos?
+
+Probably
+
+```
+App
+
+ ├── TodoForm
+ ├── TodoList
+ │      ├── TodoItem
+ │      ├── TodoItem
+ │      └── TodoItem
+```
+
+TodoForm needs
+
+```
+addTodo()
+```
+
+TodoItem needs
+
+```
+deleteTodo()
+
+toggleTodo()
+
+updateTodo()
+```
+
+TodoList needs
+
+```
+todos
+```
+
+Instead of passing these through every level,
+
+React Context stores them once.
+
+So the context value becomes
+
+```js
+{
+   todos,
+
+   addTodo,
+
+   deleteTodo,
+
+   updateTodo,
+
+   toggleTodo
+}
+```
+
+Notice something amazing?
+
+Context doesn't magically decide.
+
+It simply contains
+
+* the data
+* everything that can change the data
+
+That's it.
+
+---
+
+# Step 6: Why not store other things?
+
+Many beginners think
+
+> Should I put input text into Context?
+
+No.
+
+Ask:
+
+"Who needs it?"
+
+Only TodoForm.
+
+Then keep it inside TodoForm.
+
+```js
+const [text,setText] = useState("")
+```
+
+Context is only for shared data.
+
+Rule:
+
+Local component?
+
+↓
+
+Keep local state.
+
+Shared by many components?
+
+↓
+
+Context.
+
+---
+
+# Step 7: Where does localStorage come in?
+
+Without localStorage
+
+```
+Browser starts
+
+↓
+
+todos = []
+```
+
+Every refresh
+
+```
+[]
+```
+
+Everything disappears.
+
+localStorage simply remembers.
+
+Flow becomes
+
+```
+Page loads
+
+↓
+
+Read localStorage
+
+↓
+
+Set todos
+```
+
+Whenever todos change
+
+```
+todos updated
+
+↓
+
+Save into localStorage
+```
+
+That's why tutorials use two effects:
+
+```js
+useEffect(()=>{
+   // load once
+},[])
+```
+
+and
+
+```js
+useEffect(()=>{
+   // save every change
+},[todos])
+```
+
+The first runs once on mount to restore saved todos, and the second runs whenever `todos` changes to keep storage in sync. Since `localStorage` only stores strings, arrays/objects are converted with `JSON.stringify()` before saving and restored with `JSON.parse()` when loading. ([Video Highlight | AI Video Summarizer][2])
+
+---
+
+# Step 8: How I mentally design any React app
+
+I use this exact checklist.
+
+```
+STEP 1
+
+What real-world objects exist?
+
+Todo
+
+↓
+
+STEP 2
+
+What properties does each object have?
+
+id
+text
+completed
+
+↓
+
+STEP 3
+
+Is it one object or many?
+
+Many
+
+↓
+
+Array
+
+↓
+
+STEP 4
+
+What can the user do?
+
+Create
+Delete
+Edit
+Toggle
+
+↓
+
+Functions
+
+↓
+
+STEP 5
+
+Who needs this data?
+
+Many components
+
+↓
+
+Context
+
+↓
+
+STEP 6
+
+Should it survive refresh?
+
+Yes
+
+↓
+
+localStorage
+```
+
+This works for almost every CRUD app.
+
+---
+
+# Why tutorials feel impossible
+
+Most tutorials go like this:
+
+```js
+const TodoContext = createContext()
+
+const addTodo=()=>{}
+
+const deleteTodo=()=>{}
+```
+
+But your brain is asking
+
+> "How did they know those functions should exist?"
+
+The answer is:
+
+They didn't start with React.
+
+They started with the user's actions.
+
+React is just the implementation.
+
+---
+
+## A challenge for you
+
+Instead of watching another tutorial, grab a piece of paper and design a **Notes App** without writing code.
+
+Write down:
+
+1. What is one note?
+2. What properties does a note have?
+3. What actions can the user perform?
+4. Which components need the data?
+5. Should the data persist after refresh?
+

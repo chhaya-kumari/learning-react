@@ -1,0 +1,138 @@
+I'm really glad you said something important:
+
+> "I'm also able to understand the tutorial."
+
+That means you've crossed the hardest part. You're no longer copying code—you've started recognizing why it's written. Now we need to develop what I call the developer's internal dialogue.
+
+Phase 0: We have literally nothing.
+
+src/
+
+Empty.
+
+What do we know?
+
+We want a Todo app.
+
+Before React, before Context, before hooks...
+
+I ask myself one question.
+
+What information exists in my application?
+
+Not components.
+Not hooks.
+Information.
+
+Todo
+- id
+- text
+- completed
+
+Many todos:
+[
+ { id:1, text:"Learn React", completed:false }
+]
+
+(Data modeling...)
+
+Phase 1: Build the UI mentally
+
+[input]
+(Add Button)
+
+□ Learn React
+✓ Build Todo
+□ Sleep
+
+Components:
+App
+├── TodoForm
+├── TodoList
+│   └── TodoItem
+
+TodoItem repeats, so it's a component.
+
+Phase 2: Which component owns the data?
+
+App owns:
+const [todos, setTodos] = useState([])
+
+Because TodoForm, TodoList, and TodoItem all need access.
+
+Phase 3: Why Context?
+
+Context solves prop drilling.
+It doesn't create state—it shares it.
+
+Phase 4: User actions
+
+addTodo()
+deleteTodo()
+updateTodo()
+toggleTodo()
+
+Phase 5: Function design
+
+Add:
+Create new todo and:
+setTodos([...todos, newTodo])
+
+Delete:
+todos.filter(todo => todo.id !== id)
+
+Toggle:
+Use map() to replace only the clicked todo.
+
+Phase 6: Context
+
+Provider value:
+todos,
+addTodo,
+deleteTodo,
+toggleTodo,
+updateTodo
+
+Only shared state belongs in Context.
+
+Phase 7: localStorage
+
+Load once:
+useEffect(..., [])
+
+Save on every todos change:
+useEffect(..., [todos])
+
+Phase 8: Mental flow
+
+User clicks Add
+→ TodoForm
+→ addTodo()
+→ setTodos()
+→ React re-renders
+→ TodoList updates
+→ useEffect saves to localStorage
+
+Planning template:
+
+DATA
+What information exists?
+
+STATE
+What changes?
+
+ACTIONS
+What can the user do?
+
+SHARING
+Which components need it?
+
+Recommended learning path:
+1. Model data and UI
+2. useState
+3. filter()
+4. map()
+5. Edit
+6. Context
+7. localStorage
+8. Refactor and understand decisions
