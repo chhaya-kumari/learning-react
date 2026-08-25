@@ -1,28 +1,33 @@
 import { createSlice, nanoid } from "@reduxjs/toolkit";
 
 const initialState = {
-  todos: [{ id: 1, text: "hello, task 1" }],
+  todos: [{ id: 1, text: "hello task 1" }],
 };
 
-export const todoSlice = createSlice({
+export const todoSlice = createSlice({ 
   name: "todo",
   initialState,
   reducers: {
     addTodo: (state, action) => {
       const todo = {
         id:nanoid(),
-        text: action.payload.text
+        text: action.payload
       }
       state.todos.push(todo)
     },
     removeTodo: (state, action) => {
-      state.todos = state.todos.filter((todo) => todo.id !== action.payload.id)
+      state.todos = state.todos.filter((todo) => todo.id !== action.payload)
     },
-    updateTodo: (state, action) => {}
+    // updateTodo: (state, action) => {      
+    //   const todo = state.todos.find((todo) => todo.id === action.payload.id);
+    //   if (todo) {
+    //     todo.text = action.payload.text;
+    //   }
+    // }
   },
 });
 
-export const {addTodo, removeTodo, updateTodo} = todoSlice.actions;
+export const {addTodo, removeTodo} = todoSlice.actions;
 
 export default todoSlice.reducer
 //state - abhi initial state mei kya kya values h, un sab ka access dega. current snapshot of your application's data. It is a list of facts about your app right now.;
